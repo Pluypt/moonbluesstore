@@ -1,0 +1,102 @@
+"use client";
+
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import ProductCard from '@/components/common/ProductCard';
+import ProductSkeleton from '@/components/common/ProductSkeleton';
+import { Sneaker } from '@/types/sneaker';
+
+export default function SearchPage() {
+    const searchParams = useSearchParams();
+    const keyword = searchParams.get('keyword');
+
+    const [products, setProducts] = useState<Sneaker[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!keyword) {
+            setProducts([]);
+            setLoading(false);
+            return;
+        }
+
+        const fetchProducts = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await fetch(`http://localhost:4000/api/search?keyword=${encodeURIComponent(keyword)}&limit=20`);
+                if (!res.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                const data = await res.json();
+                if (data.success) {
+                    setProducts(data.data);
+                } else {
+                    setProducts([]);
+                    setError(data.error?.message || 'Something went wrong');
+                }
+            } catch (err: any) {
+                console.error("Search Error:", err);
+                setError("Could not connect to server. Please ensure the backend is running.");
+                setProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [keyword]);
+
+    return (
+        <div className="bg-urban-white min-h-screen">
+            {/* Header */}
+            <div className="bg-urban-black text-urban-white py-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h1 className="text-3xl font-bold font-inter tracking-tight uppercase">
+                        {keyword ? `Search Results: "${keyword}"` : 'Search for Sneakers'}
+                    </h1>
+                    <p className="mt-2 text-urban-gray font-kanit">
+                        {loading ? 'Searching...' : `${products.length} Items Found`}
+                    </p>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                {loading ? (
+                    // Skeleton Grid
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {[...Array(8)].map((_, i) => (
+                            <ProductSkeleton key={i} />
+                        ))}
+                    </div>
+                ) : error ? (
+                    // Error State
+                    <div className="text-center py-20">
+                        <div className="text-urban-gray text-6xl mb-4">⚠️</div>
+                        <h2 className="text-2xl font-bold font-inter text-urban-black mb-2">Oops! Something went wrong.</h2>
+                        <p className="text-urban-gray mb-6">{error}</p>
+                        <button onClick={() => window.location.reload()} className="bg-urban-black text-white px-6 py-2 rounded-full font-bold hover:bg-urban-dark transition-colors">
+                            Try Again
+                        </button>
+                    </div>
+                ) : products.length === 0 ? (
+                    // Empty State
+                    <div className="text-center py-20">
+                        <div className="text-urban-gray text-6xl mb-4">🔍</div>
+                        <h2 className="text-2xl font-bold font-inter text-urban-black mb-2">No results found for "{keyword}"</h2>
+                        <p className="text-urban-gray mb-6">Try searching for a different model or brand (e.g., "Jordan 1", "Yeezy").</p>
+                    </div>
+                ) : (
+                    // Product Grid
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-in-up">
+                        {products.map((product) => (
+                            <ProductCard key={product.styleID} product={product} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

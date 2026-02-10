@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/kanit": "^5.2.8",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "redis": "^4.6.10",
+    "sneaks-api": "^1.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

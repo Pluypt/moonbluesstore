@@ -1,0 +1,64 @@
+import Link from 'next/link';
+import Image from 'next/image';
+import { Sneaker } from '@/types/sneaker';
+
+interface ProductCardProps {
+    product: Sneaker;
+}
+
+const ProductCard = ({ product }: ProductCardProps) => {
+    const price = product.lowestResellPrice.stockX || product.retailPrice;
+
+    return (
+        <Link href={`/product/${product.styleID}`} className="group block h-full">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                {/* Image Container */}
+                <div className="aspect-square relative bg-urban-light p-4 flex items-center justify-center overflow-hidden">
+                    {product.thumbnail ? (
+                        <Image
+                            src={product.thumbnail}
+                            alt={product.shoeName}
+                            fill
+                            className="object-contain group-hover:scale-110 transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                    ) : (
+                        <div className="text-urban-gray text-sm">No Image</div>
+                    )}
+                    {/* Badge (Optional) */}
+                    {product.brand && (
+                        <span className="absolute top-4 left-4 bg-urban-black text-white text-xs font-bold px-2 py-1 uppercase tracking-wider rounded-sm">
+                            {product.brand}
+                        </span>
+                    )}
+                </div>
+
+                {/* Content */}
+                <div className="p-4 flex flex-col flex-grow">
+                    <h3 className="text-urban-black font-inter font-bold text-lg leading-tight mb-1 line-clamp-2 group-hover:text-urban-gray transition-colors">
+                        {product.shoeName}
+                    </h3>
+                    <p className="text-urban-gray text-sm mb-4 font-kanit">
+                        {product.styleID}
+                    </p>
+
+                    <div className="mt-auto flex items-center justify-between border-t border-urban-light pt-4">
+                        <div>
+                            <p className="text-xs text-urban-gray font-bold uppercase tracking-wide font-kanit">ราคาประเมิน</p>
+                            <p className="text-urban-black font-inter font-black text-xl">
+                                {price ? `$${price}` : 'N/A'}
+                            </p>
+                        </div>
+                        <div className="bg-urban-black text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Link>
+    );
+};
+
+export default ProductCard;
