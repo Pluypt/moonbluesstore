@@ -1,39 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MOCK_SNEAKERS } from '@/lib/mockData';
+import { getProductByStyleID } from '@/lib/sneaks';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: any }
+    { params }: { params: Promise<{ styleID: string }> }
 ) {
-    const resolvedParams = await params;
-    const styleID = resolvedParams.styleID;
-    
-    const BACKEND_URL = process.env.BACKEND_URL;
+    const { styleID } = await params;
 
-    if (BACKEND_URL) {
-        try {
-            const res = await fetch(`${BACKEND_URL}/products/${styleID}`);
-            if (res.ok) {
-                const data = await res.json();
-                return NextResponse.json(data);
-            }
-        } catch (error) {
-            console.warn('Real backend failed, falling back to mock data');
+    try {
+        const product = await getProductByStyleID(styleID);
+
+        if (!product) {
+            return NextResponse.json({
+                success: false,
+                error: 'Product not found'
+            }, { status: 404 });
         }
+
+        return NextResponse.json({
+            success: true,
+            data: product
+        });
+    } catch (error: any) {
+        console.error('Product API error:', error);
+        return NextResponse.json({
+            success: false,
+            error: error.message || 'Failed to fetch product details'
+        }, { status: 500 });
     }
-
-    // Find in mock data
-    const product = MOCK_SNEAKERS.find(s => s.styleID === styleID);
-
-    if (!product) {
-        return NextResponse.json({ success: false, error: 'Product not found in Demo Mode' }, { status: 404 });
-    }
-
-    return NextResponse.json({ 
-        success: true, 
-        data: product,
-        note: "Running in Demo Mode (Mock Data)"
-    });
 }
