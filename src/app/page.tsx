@@ -14,7 +14,7 @@ export default function Home() {
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 animate-fade-in-up w-full max-w-4xl mx-auto overflow-hidden">
           <h1 className="font-black font-inter text-white tracking-tight mb-4 flex flex-col items-center drop-shadow-lg break-words">
             <span className="text-[14vw] sm:text-7xl md:text-8xl leading-none">MOONBLUES<span className="text-brand-yellow">STORE</span></span>
-            <span className="text-xs sm:text-2xl tracking-[0.4em] font-medium mt-2 sm:mt-4 text-urban-gray font-inter uppercase whitespace-nowrap">PREMIUM STREETWEAR APP</span>
+            <span className="text-xs sm:text-2xl tracking-[0.15em] sm:tracking-[0.4em] font-medium mt-2 sm:mt-4 text-urban-gray font-inter uppercase">PREMIUM STREETWEAR APP</span>
           </h1>
 
           <p className="mt-4 sm:mt-6 text-sm sm:text-xl text-gray-300 font-kanit max-w-2xl mx-auto leading-relaxed px-4">

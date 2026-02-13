@@ -8,10 +8,19 @@ export async function GET(request: NextRequest) {
     const keyword = searchParams.get('keyword') || '';
     const limitParam = searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam) : 20;
-    
+
+    // Get filter parameters
+    const brand = searchParams.get('brand');
+    const priceRange = searchParams.get('priceRange');
+    const sortBy = searchParams.get('sortBy') || 'newest';
+
     try {
-        const products = await getProducts(keyword, limit);
-        
+        const products = await getProducts(keyword, limit, {
+            brand,
+            priceRange,
+            sortBy
+        });
+
         return NextResponse.json({
             success: true,
             count: products.length,
