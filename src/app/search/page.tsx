@@ -11,7 +11,7 @@ const ITEMS_PER_PAGE = 20;
 function SearchContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-
+    const [limit, setLimit] = useState(20); // Default items to show
     const keyword = searchParams.get('keyword');
 
     // Filters state
@@ -28,9 +28,9 @@ function SearchContent() {
     const brands = ["All", "Nike", "Jordan", "adidas", "New Balance", "Yeezy"];
     const prices = [
         { label: "ทุกราคา", value: "all" },
-        { label: "ต่ำกว่า $100", value: "low" },
-        { label: "$100 - $200", value: "mid" },
-        { label: "$200+", value: "high" }
+        { label: "ต่ำกว่า ฿3,500", value: "low" },
+        { label: "฿3,500 - ฿7,000", value: "mid" },
+        { label: "มากกว่า ฿7,000", value: "high" }
     ];
     const sorts = [
         { label: "ใหม่ล่าสุด", value: "newest" },
@@ -49,15 +49,23 @@ function SearchContent() {
     }, []);
 
     useEffect(() => {
+        // Reset limit when keyword or filters change
+        setLimit(20);
+    }, [keyword, selectedBrand, priceRange, sortBy]);
+
+    useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
             setError(null);
+
+            // Don't scroll to top automatically here to keep load more context
 
             try {
                 // Build query parameters
                 const params = new URLSearchParams();
                 params.append('keyword', keyword || '');
-                params.append('limit', ITEMS_PER_PAGE.toString());
+                params.append('limit', limit.toString());
+                params.append('page', '1'); // Always page 1, just increase limit
 
                 // Add filter parameters
                 if (selectedBrand && selectedBrand !== 'All') {
@@ -94,16 +102,18 @@ function SearchContent() {
         };
 
         fetchProducts();
-    }, [keyword, selectedBrand, priceRange, sortBy]);
+    }, [keyword, selectedBrand, priceRange, sortBy, limit]);
 
-
+    const handleLoadMore = () => {
+        setLimit(prev => prev + 20);
+    };
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     return (
-        <div className="bg-urban-white min-h-screen pb-20 pt-16 sm:pt-0">
+        <div className="bg-urban-white min-h-screen pb-20 pt-16 sm:pt-20">
             {/* Header with Sticky Filters */}
             <div className="bg-urban-black text-urban-white sticky top-0 sm:top-20 z-40 shadow-md">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -111,9 +121,6 @@ function SearchContent() {
                         <h1 className="text-xl sm:text-3xl font-bold font-kanit tracking-tight uppercase truncate max-w-[300px] sm:max-w-none">
                             {keyword ? `"${keyword}"` : 'สินค้าทั้งหมด'}
                         </h1>
-                        <p className="hidden sm:block mt-1 text-urban-gray font-kanit text-sm">
-                            ผลลัพธ์การค้นหา
-                        </p>
                     </div>
 
                     {/* Sort Dropdown for Desktop */}
@@ -176,7 +183,9 @@ function SearchContent() {
                     <span>เลื่อนลงเพื่อดูเพิ่มเติม</span>
                 </div>
 
-                {loading ? (
+                {/* Content Logic */}
+                {loading && products.length === 0 ? (
+                    // Initial Load Skeleton
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                         {[...Array(8)].map((_, i) => (
                             <ProductSkeleton key={i} />
@@ -190,18 +199,7 @@ function SearchContent() {
                             Try Again
                         </button>
                     </div>
-                ) : products.length === 0 ? (
-                    <div className="text-center py-20">
-                        <div className="text-urban-gray text-6xl mb-4">🔍</div>
-                        <h2 className="text-xl font-bold font-inter text-urban-black mb-2">ไม่พบสินค้า</h2>
-                        <button
-                            onClick={() => { setSelectedBrand(null); setPriceRange(null); router.push('/search'); }}
-                            className="bg-urban-black text-white px-6 py-2 rounded-full font-bold mt-4 font-kanit"
-                        >
-                            ล้างตัวกรอง
-                        </button>
-                    </div>
-                ) : (
+                ) : products.length > 0 ? (
                     <>
                         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 animate-fade-in-up">
                             {products.map((product) => (
@@ -209,8 +207,42 @@ function SearchContent() {
                             ))}
                         </div>
 
+                        {/* Load More Button */}
+                        <div className="flex justify-center mt-12">
+                            <button
+                                onClick={handleLoadMore}
+                                disabled={loading}
+                                className={`px-8 py-3 rounded-full font-bold font-kanit text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2 ${loading
+                                    ? 'bg-urban-gray text-white cursor-wait opacity-80'
+                                    : 'bg-urban-black text-white hover:bg-urban-dark'
+                                    }`}
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        กำลังโหลด...
+                                    </>
+                                ) : (
+                                    'ดูเพิ่มเติม'
+                                )}
+                            </button>
+                        </div>
 
+                        <p className="text-center text-urban-gray text-sm mt-4 font-kanit">
+                            แสดง {products.length} รายการ
+                        </p>
                     </>
+                ) : (
+                    <div className="text-center py-20">
+                        <div className="text-urban-gray text-6xl mb-4">🔍</div>
+                        <h2 className="text-xl font-bold font-inter text-urban-black mb-2">ไม่พบสินค้า</h2>
+                        <button
+                            onClick={() => { setSelectedBrand(null); setPriceRange(null); setLimit(20); router.push('/search'); }}
+                            className="bg-urban-black text-white px-6 py-2 rounded-full font-bold mt-4 font-kanit"
+                        >
+                            ล้างตัวกรอง
+                        </button>
+                    </div>
                 )}
             </div>
 

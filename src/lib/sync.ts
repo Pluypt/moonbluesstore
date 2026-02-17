@@ -1,14 +1,13 @@
 import { db } from '@/lib/firebase';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-const SneaksAPI = require('sneaks-api');
-const sneaks = new SneaksAPI();
+import { sneaks } from '@/lib/sneaks'; // Use the safe singleton instance
 
 /**
  * ดึงข้อมูลจาก Sneaks API และบันทึกลง Firestore
  */
 export async function syncSneakersToFirebase(keyword: string, limit: number = 10) {
     console.log(`🚀 Starting sync for: ${keyword}`);
-    
+
     return new Promise((resolve, reject) => {
         sneaks.getProducts(keyword, limit, async (err: any, products: any[]) => {
             if (err) {
@@ -42,7 +41,7 @@ export async function syncSneakersToFirebase(keyword: string, limit: number = 10
                     // ใช้ styleID เป็น Document ID เพื่อป้องกันข้อมูลซ้ำ (SKU Unique)
                     const docRef = doc(db, 'sneakers', sneakerData.styleID);
                     await setDoc(docRef, sneakerData, { merge: true });
-                    
+
                     syncCount++;
                     results.push({ styleID: p.styleID, name: p.shoeName });
                 } catch (dbError) {

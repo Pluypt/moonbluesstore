@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import ImageGallery from '@/components/common/ImageGallery';
+import RelatedProducts from '@/components/product/RelatedProducts';
 import type { Sneaker } from '@/types/sneaker';
+import { formatTHB } from '@/lib/price';
 
 export default function ProductDetailPage() {
     const params = useParams();
@@ -61,7 +63,7 @@ export default function ProductDetailPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24 text-center">
                 <h2 className="text-2xl font-bold font-inter mb-4">Product Not Found</h2>
                 <p className="text-urban-gray">{error || "The requested sneaker does not exist."}</p>
-                 <Link href="/search" className="inline-block mt-6 bg-urban-black text-white px-6 py-2 rounded-full font-bold">Back to Search</Link>
+                <Link href="/search" className="inline-block mt-6 bg-urban-black text-white px-6 py-2 rounded-full font-bold">Back to Search</Link>
             </div>
         );
     }
@@ -87,7 +89,7 @@ export default function ProductDetailPage() {
                             {galleryImages.map((img, i) => (
                                 <div key={i} className="min-w-full h-full snap-center flex items-center justify-center p-8 relative">
                                     <img src={img} alt={`${product.shoeName} ${i}`} className="max-h-full object-contain" />
-                                    <span className="absolute bottom-2 right-4 text-xs text-urban-gray/50 bg-urban-light/30 px-2 py-1 rounded">{i+1}/{galleryImages.length}</span>
+                                    <span className="absolute bottom-2 right-4 text-xs text-urban-gray/50 bg-urban-light/30 px-2 py-1 rounded">{i + 1}/{galleryImages.length}</span>
                                 </div>
                             ))}
                         </div>
@@ -115,18 +117,18 @@ export default function ProductDetailPage() {
                                     <p className="text-xs text-urban-gray font-bold uppercase tracking-wide mb-1 font-kanit">ราคาตลาดโดยประมาณ</p>
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-3xl sm:text-4xl font-black font-inter text-brand-blue">
-                                            ${lowestPrice}
+                                            {formatTHB(lowestPrice)}
                                         </span>
-                                        <span className="text-xs sm:text-sm text-urban-gray">USD</span>
+                                        <span className="text-xs sm:text-sm text-urban-gray">THB</span>
                                     </div>
                                     <p className="text-[0.65rem] sm:text-xs text-urban-gray mt-1 font-kanit text-red-500">*ราคาขึ้นอยู่กับไซส์และค่าเงิน</p>
                                 </div>
                                 <div className="text-right">
-                                     <div className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold inline-block mb-1">In Stock</div>
+                                    <div className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold inline-block mb-1">In Stock</div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         {/* Mobile Price Table */}
                         <div className="bg-white rounded-xl border border-urban-light overflow-hidden mb-6 shadow-sm">
                             <div className="bg-urban-black/5 px-4 py-2 border-b border-urban-light">
@@ -135,15 +137,15 @@ export default function ProductDetailPage() {
                             <div className="divide-y divide-urban-light/50">
                                 <div className="flex justify-between px-4 py-3 text-sm">
                                     <span className="text-urban-gray">StockX</span>
-                                    <span className="font-mono font-bold">${product.lowestResellPrice.stockX || '-'}</span>
+                                    <span className="font-mono font-bold">{formatTHB(product.lowestResellPrice.stockX)}</span>
                                 </div>
                                 <div className="flex justify-between px-4 py-3 text-sm">
                                     <span className="text-urban-gray">GOAT</span>
-                                    <span className="font-mono font-bold">${product.lowestResellPrice.goat || '-'}</span>
+                                    <span className="font-mono font-bold">{formatTHB(product.lowestResellPrice.goat)}</span>
                                 </div>
                                 <div className="flex justify-between px-4 py-3 text-sm">
                                     <span className="text-urban-gray">FlightClub</span>
-                                    <span className="font-mono font-bold">${product.lowestResellPrice.flightClub || '-'}</span>
+                                    <span className="font-mono font-bold">{formatTHB(product.lowestResellPrice.flightClub)}</span>
                                 </div>
                             </div>
                         </div>
@@ -151,7 +153,7 @@ export default function ProductDetailPage() {
                         {/* Collapsible Description */}
                         {product.description && (
                             <div className="mb-6 border-b border-urban-light pb-4">
-                                <button 
+                                <button
                                     onClick={() => setIsDescOpen(!isDescOpen)}
                                     className="flex justify-between items-center w-full text-left font-bold text-urban-black mb-2 font-kanit text-sm sm:text-base focus:outline-none"
                                 >
@@ -174,17 +176,19 @@ export default function ProductDetailPage() {
                             </div>
                             <div className="p-3 sm:p-4 bg-white border border-urban-light rounded-xl">
                                 <p className="text-[0.6rem] sm:text-xs text-urban-gray uppercase mb-1 font-kanit">ราคาป้าย</p>
-                                <p className="font-bold text-xs sm:text-sm text-urban-black">${product.retailPrice}</p>
+                                <p className="font-bold text-xs sm:text-sm text-urban-black">{formatTHB(product.retailPrice)}</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <RelatedProducts currentProduct={product} />
             </div>
 
             {/* Floating Sticky Actions (Mobile & Desktop) */}
             <div className="fixed bottom-[64px] md:bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t border-urban-light p-4 z-40 pb-safe md:static md:bg-transparent md:border-0 md:p-0 md:z-auto">
-                 <div className="max-w-7xl mx-auto flex gap-4 md:block">
-                     <a
+                <div className="max-w-7xl mx-auto flex gap-4 md:block">
+                    <a
                         href={lineUrl}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -195,7 +199,7 @@ export default function ProductDetailPage() {
                         </svg>
                         เช็คราคา / สั่งซื้อ
                     </a>
-                 </div>
+                </div>
             </div>
         </div>
     );

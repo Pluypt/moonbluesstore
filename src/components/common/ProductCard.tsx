@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Sneaker } from '@/types/sneaker';
+import { formatTHB } from '@/lib/price';
 
 interface ProductCardProps {
     product: Sneaker;
@@ -47,14 +48,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         <p className="text-[0.6rem] sm:text-xs text-urban-gray font-bold uppercase tracking-wide font-kanit mb-0.5">ราคาเริ่มต้น</p>
                         <div className="flex items-center justify-between">
                             <p className="text-urban-black font-inter font-black text-lg sm:text-xl text-brand-blue">
-                                {price ? `$${price}` : 'N/A'}
+                                {formatTHB(price)}
                             </p>
-                            
+
                             {/* Mobile visual cue */}
                             <div className="sm:hidden text-brand-yellow font-bold text-xs">
                                 ดูราคา &gt;
                             </div>
-                            
+
                             {/* Desktop hover arrow */}
                             <div className="hidden sm:block bg-urban-black text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

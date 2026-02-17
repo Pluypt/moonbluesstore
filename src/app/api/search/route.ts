@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
     const keyword = searchParams.get('keyword') || '';
     const limitParam = searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam) : 20;
+    const pageParam = searchParams.get('page');
+    const page = pageParam ? parseInt(pageParam) : 1;
 
     // Get filter parameters
     const brand = searchParams.get('brand');
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'newest';
 
     try {
-        const products = await getProducts(keyword, limit, {
+        const products = await getProducts(keyword, limit, page, {
             brand,
             priceRange,
             sortBy
