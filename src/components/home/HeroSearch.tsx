@@ -19,7 +19,7 @@ export default function HeroSearch() {
             <input
                 type="text"
                 placeholder="ค้นหารุ่นสินค้าที่ต้องการ..."
-                className="w-full bg-white text-urban-dark text-lg px-8 py-4 rounded-full font-kanit tracking-wide focus:outline-none focus:ring-4 focus:ring-brand-blue/30 shadow-lg transition-all placeholder-gray-400"
+                className="w-full bg-white text-urban-dark text-base sm:text-lg px-6 py-3 sm:px-8 sm:py-4 rounded-full font-kanit tracking-wide focus:outline-none focus:ring-4 focus:ring-brand-blue/30 shadow-lg transition-all placeholder-gray-400"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />

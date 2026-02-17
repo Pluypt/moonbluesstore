@@ -6,27 +6,27 @@ export default function Home() {
   return (
     <div className="bg-urban-white pb-20 sm:pb-0">
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] sm:h-[80vh] flex items-center justify-center bg-brand-blue overflow-hidden sm:pt-0 pt-16">
+      <section className="relative min-h-[calc(100vh-4rem)] sm:h-[80vh] flex items-center justify-center bg-brand-blue overflow-hidden pt-16 sm:pt-0">
         {/* Abstract Background - Subtle pattern */}
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-brand-blue/90"></div>
 
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 animate-fade-in-up w-full max-w-4xl mx-auto overflow-hidden">
-          <h1 className="font-black font-inter text-white tracking-tight mb-4 flex flex-col items-center drop-shadow-lg break-words">
-            <span className="text-[14vw] sm:text-7xl md:text-8xl leading-none">MOONBLUES<span className="text-brand-yellow">STORE</span></span>
-            <span className="text-xs sm:text-2xl tracking-[0.15em] sm:tracking-[0.4em] font-medium mt-2 sm:mt-4 text-urban-gray font-inter uppercase">PREMIUM STREETWEAR APP</span>
+          <h1 className="font-black font-inter text-white tracking-tight mb-2 sm:mb-4 flex flex-col items-center drop-shadow-lg break-words">
+            <span className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl leading-none">MOONBLUES<span className="text-brand-yellow">STORE</span></span>
+            <span className="text-[10px] sm:text-2xl tracking-[0.15em] sm:tracking-[0.4em] font-medium mt-2 sm:mt-4 text-urban-gray font-inter uppercase">PREMIUM STREETWEAR APP</span>
           </h1>
 
-          <p className="mt-4 sm:mt-6 text-sm sm:text-xl text-gray-300 font-kanit max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="mt-2 sm:mt-6 text-xs sm:text-xl text-gray-300 font-kanit max-w-2xl mx-auto leading-relaxed px-4">
             แหล่งรวมสนีกเกอร์รุ่นหายาก เช็คราคากลางแบบ Real-time<br className="hidden sm:block" />
             ของแท้ คัดสรรเพื่อคนรักสตรีทแฟชั่นโดยเฉพาะ
           </p>
 
-          <div className="mt-8 sm:mt-12 w-full max-w-xl mx-auto px-4">
+          <div className="mt-6 sm:mt-12 w-full max-w-xl mx-auto px-4">
             <HeroSearch />
           </div>
 
-          <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-4 sm:gap-10 text-gray-300 font-kanit text-xs sm:text-sm font-medium px-4">
+          <div className="mt-6 sm:mt-10 flex flex-wrap justify-center gap-4 sm:gap-10 text-gray-300 font-kanit text-xs sm:text-sm font-medium px-4">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-brand-green rounded-full shadow-[0_0_8px_theme('colors.brand.green')]"></span> เช็คราคาฟรี
             </div>
