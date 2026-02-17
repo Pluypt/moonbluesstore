@@ -14,16 +14,22 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase (Safe for SSR and Build time)
-let app: FirebaseApp | undefined;
-let db: Firestore | undefined;
-let auth: Auth | undefined;
+let app: FirebaseApp;
+let db: Firestore;
+let auth: Auth;
 
 if (firebaseConfig.apiKey) {
   app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
   db = getFirestore(app);
   auth = getAuth(app);
 } else {
-  console.warn("Firebase API Key is missing. Firebase features will not work.");
+  // Mock objects for build time safety
+  app = {} as FirebaseApp;
+  db = {} as Firestore;
+  auth = {} as Auth;
+  if (typeof window === 'undefined') {
+    console.warn("Firebase API Key is missing. Build will continue but database features will fail at runtime.");
+  }
 }
 
 // Analytics (Only runs in browser)
