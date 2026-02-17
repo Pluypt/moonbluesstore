@@ -186,7 +186,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Floating Sticky Actions (Mobile & Desktop) */}
-            <div className="fixed bottom-[64px] md:bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t border-urban-light p-4 z-40 pb-safe md:static md:bg-transparent md:border-0 md:px-0 md:my-20 md:z-auto">
+            <div className="fixed bottom-[64px] md:bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t border-urban-light p-4 z-40 pb-safe md:static md:bg-white md:border-0 md:px-0 md:py-16 md:z-auto">
                 <div className="max-w-7xl mx-auto flex gap-4 md:block">
                     <a
                         href={lineUrl}
