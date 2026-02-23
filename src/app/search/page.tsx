@@ -26,8 +26,8 @@ function SearchContent() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Quick Search - Trending keywords that can be updated
-    const quickSearches = [
+    // Quick Search - Trending keywords from database
+    const [quickSearches, setQuickSearches] = useState<string[]>([
         "Jordan 1",
         "Dunk Low",
         "Yeezy",
@@ -36,7 +36,29 @@ function SearchContent() {
         "Samba",
         "Air Force 1",
         "Travis Scott"
-    ];
+    ]);
+
+    // Fetch trending searches on mount
+    useEffect(() => {
+        const fetchTrending = async () => {
+            try {
+                const res = await fetch('/api/trending-searches');
+                const data = await res.json();
+                if (data.success && data.data.length > 0) {
+                    // Capitalize first letter of each word for display
+                    const formatted = data.data.map((term: string) => 
+                        term.split(' ').map(word => 
+                            word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ')
+                    );
+                    setQuickSearches(formatted);
+                }
+            } catch (err) {
+                console.error('Failed to fetch trending searches:', err);
+            }
+        };
+        fetchTrending();
+    }, []);
     const prices = [
         { label: "ทุกราคา", value: "all" },
         { label: "ต่ำกว่า ฿3,500", value: "low" },

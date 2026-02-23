@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProducts } from '@/lib/sneaks';
+import { trackSearch } from '@/lib/searchTracking';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +16,11 @@ export async function GET(request: NextRequest) {
     const brand = searchParams.get('brand');
     const priceRange = searchParams.get('priceRange');
     const sortBy = searchParams.get('sortBy') || 'newest';
+
+    // Track search keyword (async, don't wait for it)
+    if (keyword && keyword.trim() !== '') {
+        trackSearch(keyword).catch(err => console.error('Failed to track search:', err));
+    }
 
     try {
         const products = await getProducts(keyword, limit, page, {
