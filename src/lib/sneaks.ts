@@ -72,12 +72,11 @@ export const getProducts = async (
 
     console.log(`Calling sneaks.getProducts("${keyword}", ${fetchCount})`);
 
-    if (!keyword || keyword.trim() === '') {
-        return Promise.resolve([]);
-    }
+    // If keyword is empty, use a popular default search term to show products
+    const searchKeyword = keyword && keyword.trim() !== '' ? keyword : 'jordan';
 
     return new Promise((resolve, reject) => {
-        sneaks.getProducts(keyword, fetchCount, async function (err: any, products: any[]) {
+        sneaks.getProducts(searchKeyword, fetchCount, async function (err: any, products: any[]) {
             if (err) {
                 console.error(`Error fetching products for ${keyword}:`, err);
                 // Don't reject, just return empty to prevent crash
@@ -117,10 +116,14 @@ export const getProducts = async (
                         );
                     }
 
-                    // Price range filter
+                    // Price range filter (Convert THB to USD approximately: 1 USD = 35 THB)
                     if (filters.priceRange && filters.priceRange !== 'all') {
                         formattedProducts = formattedProducts.filter(p => {
                             const price = p.lowestResellPrice?.stockX || p.retailPrice || 0;
+                            // Convert price ranges from THB to USD
+                            // ต่ำกว่า ฿3,500 = < $100
+                            // ฿3,500 - ฿7,000 = $100 - $200
+                            // มากกว่า ฿7,000 = > $200
                             if (filters.priceRange === 'low') return price < 100;
                             if (filters.priceRange === 'mid') return price >= 100 && price <= 200;
                             if (filters.priceRange === 'high') return price > 200;
