@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "stockx-assets.imgix.net",
+            },
+            {
+                protocol: "https",
                 hostname: "image.goat.com",
             },
             {
