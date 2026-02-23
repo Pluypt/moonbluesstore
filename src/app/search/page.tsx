@@ -19,13 +19,24 @@ function SearchContent() {
     const [priceRange, setPriceRange] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState<string>('newest');
     const [scrolled, setScrolled] = useState(false);
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
 
     const [products, setProducts] = useState<Sneaker[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Filter Options
-    const brands = ["All", "Nike", "Jordan", "adidas", "New Balance", "Yeezy"];
+    // Quick Search - Trending keywords that can be updated
+    const quickSearches = [
+        "Jordan 1",
+        "Dunk Low",
+        "Yeezy",
+        "Air Max",
+        "New Balance 530",
+        "Samba",
+        "Air Force 1",
+        "Travis Scott"
+    ];
     const prices = [
         { label: "ทุกราคา", value: "all" },
         { label: "ต่ำกว่า ฿3,500", value: "low" },
@@ -112,12 +123,86 @@ function SearchContent() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleQuickSearch = (term: string) => {
+        router.push(`/search?keyword=${encodeURIComponent(term)}`);
+    };
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchInput.trim()) {
+            router.push(`/search?keyword=${encodeURIComponent(searchInput.trim())}`);
+            setShowSearchModal(false);
+            setSearchInput('');
+        }
+    };
+
     return (
         <div className="bg-urban-white min-h-screen pb-20 pt-16 sm:pt-20">
+            {/* Search Modal */}
+            {showSearchModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center pt-20 px-4" onClick={() => setShowSearchModal(false)}>
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl animate-fade-in-up" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-bold font-kanit">ค้นหาสินค้า</h3>
+                                <button onClick={() => setShowSearchModal(false)} className="text-urban-gray hover:text-urban-black">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <form onSubmit={handleSearchSubmit}>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={searchInput}
+                                        onChange={(e) => setSearchInput(e.target.value)}
+                                        placeholder="พิมพ์ชื่อรุ่น, แบรนด์..."
+                                        className="w-full bg-urban-light text-urban-dark rounded-full py-3 pl-6 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-blue placeholder-urban-gray text-base font-kanit"
+                                        autoFocus
+                                    />
+                                    <button type="submit" className="absolute right-4 top-1/2 transform -translate-y-1/2 text-urban-gray hover:text-urban-black">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                            <div className="mt-6">
+                                <p className="text-xs text-urban-gray font-kanit mb-3">คำค้นหายอดนิยม</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {quickSearches.map((term) => (
+                                        <button
+                                            key={term}
+                                            onClick={() => {
+                                                handleQuickSearch(term);
+                                                setShowSearchModal(false);
+                                            }}
+                                            className="px-4 py-2 bg-urban-light hover:bg-brand-yellow hover:text-brand-blue rounded-full text-sm font-kanit transition-all"
+                                        >
+                                            {term}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header with Sticky Filters */}
             <div className="bg-urban-black text-urban-white sticky top-0 sm:top-20 z-40 shadow-md">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setShowSearchModal(true)}
+                            className="p-2 hover:bg-urban-gray/20 rounded-full transition-colors"
+                            aria-label="Search"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
                         <h1 className="text-xl sm:text-3xl font-bold font-kanit tracking-tight uppercase truncate max-w-[300px] sm:max-w-none">
                             {keyword ? `"${keyword}"` : 'สินค้าทั้งหมด'}
                         </h1>
@@ -135,8 +220,11 @@ function SearchContent() {
                     </div>
                 </div>
 
-                {/* Mobile Scrollable Filters */}
+                {/* Mobile Scrollable Quick Search */}
                 <div className="border-t border-urban-gray/30 overflow-x-auto no-scrollbar py-3 px-4 flex gap-2 sm:px-8 bg-urban-black/95 backdrop-blur">
+                    <div className="flex items-center gap-2 mr-2">
+                        <span className="text-xs font-bold text-urban-gray whitespace-nowrap font-kanit">QUICK SEARCH:</span>
+                    </div>
                     {/* Sort Dropdown for Mobile */}
                     <select
                         value={sortBy}
@@ -145,17 +233,17 @@ function SearchContent() {
                     >
                         {sorts.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                     </select>
-                    {/* Brand Pills */}
-                    {brands.map((brand) => (
+                    {/* Quick Search Pills */}
+                    {quickSearches.map((term) => (
                         <button
-                            key={brand}
-                            onClick={() => setSelectedBrand(brand === "All" ? null : brand)}
-                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold font-kanit transition-all ${(brand === "All" && !selectedBrand) || selectedBrand === brand
+                            key={term}
+                            onClick={() => handleQuickSearch(term)}
+                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold font-kanit transition-all ${keyword === term
                                 ? 'bg-brand-yellow text-brand-blue scale-105'
-                                : 'bg-urban-dark text-urban-gray border border-urban-gray/50'
+                                : 'bg-urban-dark text-urban-gray border border-urban-gray/50 hover:bg-urban-gray/20'
                                 }`}
                         >
-                            {brand}
+                            {term}
                         </button>
                     ))}
                     <div className="w-[1px] bg-urban-gray/50 h-6 mx-1"></div>
@@ -240,7 +328,7 @@ function SearchContent() {
                             onClick={() => { setSelectedBrand(null); setPriceRange(null); setLimit(20); router.push('/search'); }}
                             className="bg-urban-black text-white px-6 py-2 rounded-full font-bold mt-4 font-kanit"
                         >
-                            ล้างตัวกรอง
+                            ค้นหาใหม่
                         </button>
                     </div>
                 )}
