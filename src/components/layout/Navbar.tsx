@@ -152,7 +152,7 @@ export default function Navbar() {
                             <Link href="/" className="text-urban-dark hover:text-urban-black font-kanit font-bold text-base tracking-wide">หน้าแรก</Link>
                             <Link href="/search?keyword=new" className="text-urban-dark hover:text-urban-black font-kanit font-bold text-base tracking-wide">สินค้าใหม่</Link>
                             <Link href="/search?keyword=popular" className="text-urban-dark hover:text-urban-black font-kanit font-bold text-base tracking-wide">ยอดนิยม</Link>
-                            <a href="https://line.me/R/ti/p/@moonbluesstore" target="_blank" className="bg-brand-green text-white px-4 py-1.5 rounded-full font-bold font-kanit text-sm hover:bg-green-600 transition-colors">
+                            <a href="https://lin.ee/PnfSCsb" target="_blank" className="bg-brand-green text-white px-4 py-1.5 rounded-full font-bold font-kanit text-sm hover:bg-green-600 transition-colors">
                                 Line Contact
                             </a>
                         </div>
@@ -187,7 +187,7 @@ export default function Navbar() {
                         label="Popular"
                         icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>}
                     />
-                    <a href="https://line.me/R/ti/p/@moonbluesstore" target="_blank" className="flex flex-col items-center justify-center w-full h-full space-y-1 text-urban-gray hover:text-brand-green">
+                    <a href="https://lin.ee/PnfSCsb" target="_blank" className="flex flex-col items-center justify-center w-full h-full space-y-1 text-urban-gray hover:text-brand-green">
                         <div className="p-1.5 rounded-full">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.51 2 9.84c0 2.96 2.1 5.56 5.16 6.94l-.84 3.06c-.08.28.24.51.5.38l3.66-2.02c.5.08 1.02.12 1.52.12 5.52 0 10-3.51 10-7.84S17.52 2 12 2z" /></svg>
                         </div>

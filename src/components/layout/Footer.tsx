@@ -27,8 +27,8 @@ const Footer = () => {
                     {/* Contact */}
                     <div>
                         <h4 className="text-xs sm:text-sm font-semibold tracking-wider uppercase mb-4 text-urban-white font-kanit">ติดต่อเรา</h4>
-                        <a href="https://line.me/R/ti/p/@moonbluesstore" target="_blank" className="block text-xs sm:text-sm text-green-400 mb-2 font-kanit hover:text-green-300 transition-colors cursor-pointer font-bold">
-                             <span className="mr-1">LINE:</span> @moonbluesstore
+                        <a href="https://lin.ee/PnfSCsb" target="_blank" className="block text-xs sm:text-sm text-green-400 mb-2 font-kanit hover:text-green-300 transition-colors cursor-pointer font-bold">
+                             <span className="mr-1">LINE:</span> @moonblue.s
                         </a>
                         <p className="text-xs sm:text-sm text-urban-gray font-kanit">Email: support@moonblue.s.com</p>
                     </div>
