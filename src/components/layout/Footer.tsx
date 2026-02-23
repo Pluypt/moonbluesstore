@@ -6,10 +6,10 @@ const Footer = () => {
                     {/* Brand */}
                     <div className="col-span-2 md:col-span-1 flex flex-col items-start">
                         <div className="font-kanit font-black text-2xl tracking-tighter text-urban-white mb-4 flex flex-col items-start leading-none group">
-                            <span className="relative">moonblue<span className="text-brand-yellow">.</span>s</span>
-                            <span className="text-[0.6rem] tracking-[0.3em] text-urban-gray font-inter mt-1">STREETWEAR</span>
+                            <span className="relative font-black">moonblue<span className="text-brand-yellow">.</span>s</span>
+                            <span className="text-[0.6rem] tracking-[0.3em] text-urban-gray font-inter mt-1 uppercase font-semibold">STREETWEAR</span>
                         </div>
-                        <p className="text-xs sm:text-sm text-urban-gray max-w-xs font-kanit">
+                        <p className="text-xs sm:text-sm text-urban-gray max-w-xs font-kanit font-normal">
                             แหล่งรวมรองเท้าหายาก เช็คราคารีเซลแบบเรียลไทม์ ของแท้ 100% เชื่อถือได้ พร้อมบริการสั่งซื้อผ่าน LINE
                         </p>
                     </div>

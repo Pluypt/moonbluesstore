@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 const kanit = Kanit({
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   subsets: ["thai", "latin"],
   variable: "--font-kanit",
   display: "swap",

@@ -101,8 +101,8 @@ export default function Navbar() {
                     <div className="flex justify-between h-16 sm:h-20 items-center">
                         {/* Logo */}
                         <Link href="/" className="font-kanit font-black text-xl sm:text-2xl tracking-tighter text-brand-blue hover:text-urban-dark transition-colors flex flex-col items-start leading-none group">
-                            <span className="relative text-2xl sm:text-3xl">MOONBLUE<span className="text-brand-yellow">.</span>s</span>
-                            <span className="hidden sm:block text-[0.6rem] tracking-[0.3em] text-urban-gray font-inter group-hover:text-brand-yellow transition-colors mt-1 uppercase">Premium Streetwear</span>
+                            <span className="relative text-2xl sm:text-3xl font-black">MOONBLUE<span className="text-brand-yellow">.</span>s</span>
+                            <span className="hidden sm:block text-[0.6rem] tracking-[0.3em] text-urban-gray font-inter group-hover:text-brand-yellow transition-colors mt-1 uppercase font-semibold">Premium Streetwear</span>
                         </Link>
 
                         {/* Desktop Search Bar */}

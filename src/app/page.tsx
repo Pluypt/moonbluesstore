@@ -13,11 +13,11 @@ export default function Home() {
 
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 animate-fade-in-up w-full max-w-4xl mx-auto overflow-hidden">
           <h1 className="font-black font-inter text-white tracking-tight mb-2 sm:mb-4 flex flex-col items-center drop-shadow-lg break-words">
-            <span className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl leading-none">MOONBLUES<span className="text-brand-yellow">STORE</span></span>
-            <span className="text-[10px] sm:text-2xl tracking-[0.15em] sm:tracking-[0.4em] font-medium mt-2 sm:mt-4 text-urban-gray font-inter uppercase">PREMIUM STREETWEAR APP</span>
+            <span className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl leading-none font-black">MOONBLUES<span className="text-brand-yellow font-black">STORE</span></span>
+            <span className="text-[10px] sm:text-2xl tracking-[0.15em] sm:tracking-[0.4em] font-semibold mt-2 sm:mt-4 text-urban-gray font-inter uppercase">PREMIUM STREETWEAR APP</span>
           </h1>
 
-          <p className="mt-2 sm:mt-6 text-xs sm:text-xl text-gray-300 font-kanit max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="mt-2 sm:mt-6 text-xs sm:text-xl text-gray-300 font-kanit font-normal max-w-2xl mx-auto leading-relaxed px-4">
             แหล่งรวมสนีกเกอร์รุ่นหายาก เช็คราคากลางแบบ Real-time<br className="hidden sm:block" />
             ของแท้ คัดสรรเพื่อคนรักสตรีทแฟชั่นโดยเฉพาะ
           </p>
@@ -48,12 +48,12 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-10 sm:mb-16">
-            <span className="text-brand-blue font-bold tracking-wider uppercase text-xs sm:text-sm mb-2 block">Easy Steps</span>
+            <span className="text-brand-blue font-bold tracking-wider uppercase text-xs sm:text-sm mb-2 block font-inter">Easy Steps</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-kanit text-urban-dark">
-              สั่งซื้อง่ายๆ ใน <span className="text-brand-blue">3 ขั้นตอน</span>
+              สั่งซื้อง่ายๆ ใน <span className="text-brand-blue font-black">3 ขั้นตอน</span>
             </h2>
             <div className="w-16 sm:w-20 h-1.5 bg-brand-yellow mx-auto mt-4 rounded-full"></div>
-            <p className="mt-4 sm:mt-6 text-urban-gray font-kanit text-sm sm:text-lg max-w-2xl mx-auto">
+            <p className="mt-4 sm:mt-6 text-urban-gray font-kanit font-normal text-sm sm:text-lg max-w-2xl mx-auto">
               อยากได้คู่ไหน แค่ทักมา เราจัดการให้ครบ จบในที่เดียว
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function Home() {
                 👟
               </div>
               <h3 className="text-lg sm:text-xl font-bold font-kanit text-urban-dark mb-2 sm:mb-3">1. เลือกรุ่นที่ใช่</h3>
-              <p className="text-sm sm:text-base text-urban-gray font-kanit leading-relaxed">
+              <p className="text-sm sm:text-base text-urban-gray font-kanit font-normal leading-relaxed">
                 พิมพ์ชื่อรุ่นที่อยากได้ในช่องค้นหา หรือจะแคปรูปส่งมาให้แอดมินช่วยหาก็ได้นะ
               </p>
             </div>
@@ -83,7 +83,7 @@ export default function Home() {
                 💬
               </div>
               <h3 className="text-lg sm:text-xl font-bold font-kanit text-urban-dark mb-2 sm:mb-3">2. เช็คราคาชัวร์ๆ</h3>
-              <p className="text-sm sm:text-base text-urban-gray font-kanit leading-relaxed">
+              <p className="text-sm sm:text-base text-urban-gray font-kanit font-normal leading-relaxed">
                 กดปุ่ม Line ทักแอดมินเพื่อเช็คราคาล่าสุด ไซส์ที่เป๊ะ และโปรโมชั่นเด็ดๆ (ราคาดีแน่นอน!)
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function Home() {
                 🏠
               </div>
               <h3 className="text-lg sm:text-xl font-bold font-kanit text-urban-dark mb-2 sm:mb-3">3. นอนรอรับของ</h3>
-              <p className="text-sm sm:text-base text-urban-gray font-kanit leading-relaxed">
+              <p className="text-sm sm:text-base text-urban-gray font-kanit font-normal leading-relaxed">
                 โอนเงินยืนยันออเดอร์ แล้วนั่งจิบกาแฟรอรับรองเท้าคู่โปรดส่งตรงถึงหน้าบ้าน
               </p>
             </div>
@@ -105,10 +105,10 @@ export default function Home() {
 
           <div className="mt-12 sm:mt-20 text-center">
             <Link href="/search" className="inline-flex items-center justify-center gap-3 bg-brand-blue text-white px-8 sm:px-10 py-3 sm:py-4 rounded-full font-bold font-kanit text-base sm:text-lg tracking-wide hover:bg-brand-yellow hover:text-brand-blue shadow-xl shadow-brand-blue/20 hover:shadow-brand-yellow/30 transition-all transform hover:scale-105 active:scale-95 group">
-              <span>เริ่มค้นหาเลย</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="font-bold">เริ่มค้นหาเลย</span>
+              <span className="group-hover:translate-x-1 transition-transform font-bold">→</span>
             </Link>
-            <p className="mt-6 text-xs sm:text-sm text-urban-gray font-kanit">
+            <p className="mt-6 text-xs sm:text-sm text-urban-gray font-kanit font-normal">
               หรือทักไลน์สอบถาม <span className="text-brand-blue font-bold cursor-pointer hover:underline">@moonbluesstore</span>
             </p>
           </div>
