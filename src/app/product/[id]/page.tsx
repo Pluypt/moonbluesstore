@@ -191,7 +191,7 @@ export default function ProductDetailPage() {
                         href={lineUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 bg-brand-blue text-white py-3 sm:py-4 px-6 rounded-full font-bold font-kanit text-base sm:text-lg flex items-center justify-center gap-3 shadow-xl hover:bg-urban-dark hover:scale-[1.02] transition-all"
+                        className="flex-1 bg-brand-green text-white py-3 sm:py-4 px-6 rounded-full font-bold font-kanit text-base sm:text-lg flex items-center justify-center gap-3 shadow-xl hover:bg-green-600 hover:scale-[1.02] transition-all"
                     >
                         <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22.288 10.456c-.538-6.19-6.356-9.822-12.449-7.756C6.27 4.195 4.39 6.208 3.037 8.92c-.22.442-.423.894-.593 1.357-.757 2.062-.72 4.354.12 6.42.065.16.134.318.207.474.912 1.94 2.457 3.52 4.407 4.5l.39.196 2.06.635c.164.05.334.076.505.076.47 0 .93-.117 1.35-.348l.067-.038c1.656-.91 3.57-1.12 5.372-.605l.35.1c3.16.905 6.55-1.12 7.087-4.234.34-1.97.02-3.99-.92-5.75-.417-.79-.938-1.517-1.543-2.155zm-1.636 7.68c-.378 2.193-2.766 3.62-5.01 2.978l-.35-.1c-2.176-.622-4.5.3-6.155 2.15l-.042.048c-.628.715-1.782.52-2.138-.363-.787-1.956-1.077-4.085-.84-6.18.06-.525.176-1.043.344-1.543 1.144-3.4 4.54-5.518 8.016-5.006 4.344.64 7.217 4.67 6.512 8.97l-.337 2.046z" />
