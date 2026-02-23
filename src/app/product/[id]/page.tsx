@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import ImageGallery from '@/components/common/ImageGallery';
 import RelatedProducts from '@/components/product/RelatedProducts';
+import WishlistButton from '@/components/common/WishlistButton';
 import type { Sneaker } from '@/types/sneaker';
 import { formatTHB } from '@/lib/price';
 
@@ -102,10 +103,15 @@ export default function ProductDetailPage() {
                     <div className="flex flex-col h-full px-4 sm:px-0">
                         {/* Header */}
                         <div className="mb-4 sm:mb-6">
-                            <h2 className="text-urban-gray font-bold tracking-wider uppercase text-xs sm:text-sm mb-1 sm:mb-2">{product.brand}</h2>
-                            <h1 className="text-2xl sm:text-4xl font-black font-inter text-urban-black leading-tight mb-2">
-                                {product.shoeName}
-                            </h1>
+                            <div className="flex items-start justify-between gap-4 mb-2">
+                                <div className="flex-1">
+                                    <h2 className="text-urban-gray font-bold tracking-wider uppercase text-xs sm:text-sm mb-1 sm:mb-2">{product.brand}</h2>
+                                    <h1 className="text-2xl sm:text-4xl font-black font-inter text-urban-black leading-tight mb-2">
+                                        {product.shoeName}
+                                    </h1>
+                                </div>
+                                <WishlistButton product={product} size="large" />
+                            </div>
                             <p className="font-kanit text-urban-gray text-sm">SKU: {product.styleID}</p>
                         </div>
 

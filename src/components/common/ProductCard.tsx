@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Sneaker } from '@/types/sneaker';
 import { formatTHB } from '@/lib/price';
+import WishlistButton from './WishlistButton';
 
 interface ProductCardProps {
     product: Sneaker;
@@ -33,6 +34,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             {product.brand}
                         </span>
                     )}
+                    {/* Wishlist Button */}
+                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <WishlistButton product={product} size="small" />
+                    </div>
                 </div>
 
                 {/* Content */}
