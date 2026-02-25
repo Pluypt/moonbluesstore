@@ -175,29 +175,7 @@ function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: numb
 
 export const getProductByStyleID = async (styleID: string): Promise<Sneaker | null> => {
     const redis = await getRedisClient();
-                if (filters.priceRange === 'low') return price < 100;
-                if (filters.priceRange === 'mid') return price >= 100 && price <= 200;
-                if (filters.priceRange === 'high') return price > 200;
-                return true;
-            });
-        }
-
-        // Sorting
-        if (filters.sortBy) {
-            if (filters.sortBy === 'price_asc') {
-                results.sort((a, b) =>
-                    (a.lowestResellPrice?.stockX || 0) - (b.lowestResellPrice?.stockX || 0)
-                );
-            } else if (filters.sortBy === 'price_desc') {
-                results.sort((a, b) =>
-                    (b.lowestResellPrice?.stockX || 0) - (a.lowestResellPrice?.stockX || 0)
-                );
-            }
-        }
-    }
-
-    return results.slice(0, limit);
-    
+    const cacheKey = `product:${styleID}`;
     /* ORIGINAL CODE - Temporarily disabled
     const redis = await getRedisClient();
     // Include filters in cache key for unique caching
