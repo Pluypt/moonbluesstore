@@ -345,7 +345,19 @@ function SearchContent() {
                 ) : (
                     <div className="text-center py-20">
                         <div className="text-urban-gray text-6xl mb-4">🔍</div>
-                        <h2 className="text-xl font-bold font-inter text-urban-black mb-2">ไม่พบสินค้า</h2>
+                        <h2 className="text-xl font-bold font-inter text-urban-black mb-2">ไม่พบสินค้า "{keyword}"</h2>
+                        <p className="text-urban-gray mb-4 font-kanit">ลองค้นหาด้วยคำอื่น หรือเลือกจาก Quick Search</p>
+                        <div className="flex flex-wrap justify-center gap-2 mb-6">
+                            {quickSearches.slice(0, 4).map((term) => (
+                                <button
+                                    key={term}
+                                    onClick={() => handleQuickSearch(term)}
+                                    className="px-4 py-2 bg-urban-light hover:bg-brand-yellow hover:text-brand-blue rounded-full text-sm font-kanit transition-all"
+                                >
+                                    {term}
+                                </button>
+                            ))}
+                        </div>
                         <button
                             onClick={() => { setSelectedBrand(null); setPriceRange(null); setLimit(20); router.push('/search'); }}
                             className="bg-urban-black text-white px-6 py-2 rounded-full font-bold mt-4 font-kanit"

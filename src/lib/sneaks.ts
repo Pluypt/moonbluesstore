@@ -76,20 +76,28 @@ export const getProducts = async (
     const searchKeyword = keyword && keyword.trim() !== '' ? keyword : 'jordan';
 
     return new Promise((resolve, reject) => {
+        console.log(`[SNEAKS] Searching for: "${searchKeyword}" with limit: ${fetchCount}`);
+        
         sneaks.getProducts(searchKeyword, fetchCount, async function (err: any, products: any[]) {
             if (err) {
-                console.error(`Error fetching products for ${keyword}:`, err);
-                // Don't reject, just return empty to prevent crash
+                console.error(`[SNEAKS ERROR] Failed to fetch products for "${searchKeyword}":`, err);
                 resolve([]);
                 return;
             }
 
-            // Relaxed check
-            if (!products) {
-                products = [];
+            // Check if products is valid
+            if (!products || !Array.isArray(products)) {
+                console.warn(`[SNEAKS WARNING] No products array returned for "${searchKeyword}"`);
+                resolve([]);
+                return;
             }
 
-            console.log(`Sneaks API returned ${products.length} products`);
+            console.log(`[SNEAKS SUCCESS] Returned ${products.length} products for "${searchKeyword}"`);
+
+            // If no results, log for debugging
+            if (products.length === 0) {
+                console.warn(`[SNEAKS] Zero results for "${searchKeyword}" - API may not have data for this search term`);
+            }
 
             try {
                 let formattedProducts: Sneaker[] = products.map(p => ({
