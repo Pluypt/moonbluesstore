@@ -1,14 +1,9 @@
-
 import getRedisClient from './redis';
 import { Sneaker } from '@/types/sneaker';
 import { searchMockData } from './mockData';
 import { cacheProducts, searchCachedProducts } from './productCache';
 
-// Singleton Logic to prevent Mongoose OverwriteModelError in Next.js Dev (HMR)
-// The error "Cannot overwrite Sneaker model" happens because sneaks-api defines a model on import.
-// We must avoid re-importing (re-requiring) 'sneaks-api' if it's already loaded in the process.
-
-// We need to access mongoose directly to clear the model if it exists
+// Singleton Logic
 const mongoose = require('mongoose');
 
 declare global {
@@ -21,20 +16,17 @@ let SneaksAPI;
 if (global.SneaksAPIClass) {
     SneaksAPI = global.SneaksAPIClass;
 } else {
-    // CRITICAL: Before requiring sneaks-api, check if 'Sneaker' model exists in Mongoose and delete it!
-    // sneaks-api attempts to define 'Sneaker' model on load. If it exists, it throws OverwriteModelError.
     if (mongoose.models && mongoose.models.Sneaker) {
         delete mongoose.models.Sneaker;
     }
-
-    // Only require if not globally cached
     SneaksAPI = require('sneaks-api');
     global.SneaksAPIClass = SneaksAPI;
 }
 
 export const sneaks = global.sneaksInstance || new SneaksAPI();
 if (!global.sneaksInstance) global.sneaksInstance = sneaks;
-const CACHE_EXPIRATION = 3600; // 1 hour
+
+const CACHE_EXPIRATION = 3600;
 
 export interface ProductFilters {
     brand?: string | null;
@@ -42,6 +34,7 @@ export interface ProductFilters {
     sortBy?: string;
 }
 
+// Main function to get products with 3-tier fallback
 export const getProducts = async (
     keyword: string,
     limit: number = 20,
@@ -50,65 +43,47 @@ export const getProducts = async (
 ): Promise<Sneaker[]> => {
     console.log(`[GETPRODUCTS] Searching for: "${keyword}"`);
     
-    // Strategy:
-    // 1. Try sneaks-api first
-    // 2. If fails, try Firebase cache
-    // 3. If no cache, use mock data
-    
     const searchKeyword = keyword && keyword.trim() !== '' ? keyword : 'jordan';
     
-    // Try sneaks-api first
+    // 1. Try sneaks-api
     try {
-        console.log(`[SNEAKS] Attempting to fetch from sneaks-api...`);
+        console.log(`[SNEAKS] Attempting API...`);
         const apiResults = await fetchFromSneaksAPI(searchKeyword, limit);
         
         if (apiResults && apiResults.length > 0) {
-            console.log(`[SNEAKS SUCCESS] Got ${apiResults.length} products from API`);
-            
-            // Cache to Firebase for future use (async, don't wait)
-            cacheProducts(apiResults).catch(err => 
-                console.error('[CACHE] Failed to save to Firebase:', err)
-            );
-            
-            // Apply filters and return
+            console.log(`[SNEAKS SUCCESS] Got ${apiResults.length} products`);
+            cacheProducts(apiResults).catch(err => console.error('[CACHE ERROR]:', err));
             return applyFilters(apiResults, filters, limit);
         }
     } catch (error) {
-        console.error('[SNEAKS ERROR] API failed:', error);
+        console.error('[SNEAKS ERROR]:', error);
     }
     
-    // Fallback to Firebase cache
-    console.log(`[FIREBASE] Trying Firebase cache...`);
+    // 2. Try Firebase cache
+    console.log(`[FIREBASE] Trying cache...`);
     const cachedResults = await searchCachedProducts(searchKeyword, limit * 2);
     
     if (cachedResults && cachedResults.length > 0) {
-        console.log(`[FIREBASE SUCCESS] Got ${cachedResults.length} products from cache`);
+        console.log(`[FIREBASE SUCCESS] Got ${cachedResults.length} products`);
         return applyFilters(cachedResults, filters, limit);
     }
     
-    // Final fallback to mock data
-    console.log(`[MOCK] Using mock data as final fallback`);
+    // 3. Use mock data
+    console.log(`[MOCK] Using mock data`);
     const mockResults = searchMockData(searchKeyword, limit * 2);
     return applyFilters(mockResults, filters, limit);
 };
 
-// Helper function to fetch from sneaks-api
+// Helper: Fetch from sneaks-api
 async function fetchFromSneaksAPI(keyword: string, limit: number): Promise<Sneaker[]> {
     return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-            reject(new Error('API timeout after 10 seconds'));
-        }, 10000);
+        const timeout = setTimeout(() => reject(new Error('Timeout')), 10000);
 
         sneaks.getProducts(keyword, limit, (err: any, products: any[]) => {
             clearTimeout(timeout);
             
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            if (!products || !Array.isArray(products) || products.length === 0) {
-                reject(new Error('No products returned'));
+            if (err || !products || !Array.isArray(products) || products.length === 0) {
+                reject(err || new Error('No products'));
                 return;
             }
 
@@ -132,19 +107,17 @@ async function fetchFromSneaksAPI(keyword: string, limit: number): Promise<Sneak
     });
 }
 
-// Helper function to apply filters
+// Helper: Apply filters
 function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: number = 20): Sneaker[] {
     let results = [...products];
     
     if (filters) {
-        // Brand filter
         if (filters.brand && filters.brand !== "All") {
             results = results.filter(p =>
                 p.brand?.toLowerCase().includes(filters.brand!.toLowerCase())
             );
         }
 
-        // Price range filter
         if (filters.priceRange && filters.priceRange !== 'all') {
             results = results.filter(p => {
                 const price = p.lowestResellPrice?.stockX || p.retailPrice || 0;
@@ -155,7 +128,6 @@ function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: numb
             });
         }
 
-        // Sorting
         if (filters.sortBy) {
             if (filters.sortBy === 'price_asc') {
                 results.sort((a, b) =>
@@ -172,101 +144,7 @@ function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: numb
     return results.slice(0, limit);
 }
 
-
-// Helper function to apply filters
-function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: number = 20): Sneaker[] {
-                return;
-            }
-
-            console.log(`[SNEAKS SUCCESS] Returned ${products.length} products for "${searchKeyword}"`);
-
-            // If no results from API, use mock data
-            if (products.length === 0) {
-                console.warn(`[SNEAKS] Zero results for "${searchKeyword}" - using mock data`);
-                const mockResults = searchMockData(searchKeyword, limit);
-                resolve(mockResults);
-                return;
-            }
-
-            try {
-                let formattedProducts: Sneaker[] = products.map(p => ({
-                    styleID: p.styleID,
-                    shoeName: p.shoeName,
-                    brand: p.brand,
-                    silhoutte: p.silhoutte,
-                    colorway: p.colorway || 'N/A', // Ensure fallback
-                    retailPrice: p.retailPrice,
-                    thumbnail: p.thumbnail,
-                    imageLinks: p.imageLinks || [],
-                    lowestResellPrice: p.lowestResellPrice || {},
-                    resellLinks: p.resellLinks || {},
-                    description: p.description,
-                    urlKey: p.urlKey
-                }));
-
-                // Apply filters if provided
-                if (filters) {
-                    // Brand filter
-                    if (filters.brand && filters.brand !== "All") {
-                        formattedProducts = formattedProducts.filter(p =>
-                            p.brand?.toLowerCase().includes(filters.brand!.toLowerCase())
-                        );
-                    }
-
-                    // Price range filter (Convert THB to USD approximately: 1 USD = 35 THB)
-                    if (filters.priceRange && filters.priceRange !== 'all') {
-                        formattedProducts = formattedProducts.filter(p => {
-                            const price = p.lowestResellPrice?.stockX || p.retailPrice || 0;
-                            // Convert price ranges from THB to USD
-                            // ต่ำกว่า ฿3,500 = < $100
-                            // ฿3,500 - ฿7,000 = $100 - $200
-                            // มากกว่า ฿7,000 = > $200
-                            if (filters.priceRange === 'low') return price < 100;
-                            if (filters.priceRange === 'mid') return price >= 100 && price <= 200;
-                            if (filters.priceRange === 'high') return price > 200;
-                            return true;
-                        });
-                    }
-
-                    // Sorting
-                    if (filters.sortBy) {
-                        if (filters.sortBy === 'price_asc') {
-                            formattedProducts.sort((a, b) =>
-                                (a.lowestResellPrice?.stockX || 0) - (b.lowestResellPrice?.stockX || 0)
-                            );
-                        } else if (filters.sortBy === 'price_desc') {
-                            formattedProducts.sort((a, b) =>
-                                (b.lowestResellPrice?.stockX || 0) - (a.lowestResellPrice?.stockX || 0)
-                            );
-                        }
-                    }
-                }
-
-                // Pagination Logic
-                // If we fetched more than limit, we should slice.
-                // But currently we forced fetchCount = limit for stability.
-                // So we just return what we got.
-                const paginatedProducts = formattedProducts;
-
-                try {
-                    if (redis) {
-                        await redis.set(cacheKey, JSON.stringify(paginatedProducts), { EX: CACHE_EXPIRATION });
-                    }
-                } catch (error) {
-                    console.error('Redis set error:', error);
-                }
-
-                resolve(paginatedProducts);
-            } catch (innerError) {
-                console.error("Error processing products:", innerError);
-                resolve([]);
-            }
-        });
-    });
-    */
-};
-
-
+// Get product by styleID
 export const getProductByStyleID = async (styleID: string): Promise<Sneaker | null> => {
     const redis = await getRedisClient();
     const cacheKey = `product:${styleID}`;
@@ -283,37 +161,38 @@ export const getProductByStyleID = async (styleID: string): Promise<Sneaker | nu
         console.error('Redis error:', error);
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         sneaks.getProductPrices(styleID, async (err: any, product: any) => {
-            if (err) {
-                console.error(`Error fetching product details for ${styleID}:`, err);
+            if (err || !product) {
+                console.error(`Error fetching product ${styleID}:`, err);
                 resolve(null);
-            } else {
-                const formattedProduct: Sneaker = {
-                    styleID: product.styleID,
-                    shoeName: product.shoeName,
-                    brand: product.brand,
-                    silhoutte: product.silhoutte,
-                    colorway: product.colorway || 'N/A',
-                    retailPrice: product.retailPrice,
-                    thumbnail: product.thumbnail,
-                    imageLinks: product.imageLinks || [],
-                    lowestResellPrice: product.lowestResellPrice || {},
-                    resellLinks: product.resellLinks || {},
-                    description: product.description,
-                    urlKey: product.urlKey
-                };
-
-                try {
-                    if (redis) {
-                        await redis.set(cacheKey, JSON.stringify(formattedProduct), { EX: CACHE_EXPIRATION });
-                    }
-                } catch (error) {
-                    console.error('Redis set error:', error);
-                }
-
-                resolve(formattedProduct);
+                return;
             }
+
+            const formattedProduct: Sneaker = {
+                styleID: product.styleID,
+                shoeName: product.shoeName,
+                brand: product.brand,
+                silhoutte: product.silhoutte,
+                colorway: product.colorway || 'N/A',
+                retailPrice: product.retailPrice,
+                thumbnail: product.thumbnail,
+                imageLinks: product.imageLinks || [],
+                lowestResellPrice: product.lowestResellPrice || {},
+                resellLinks: product.resellLinks || {},
+                description: product.description,
+                urlKey: product.urlKey
+            };
+
+            try {
+                if (redis) {
+                    await redis.set(cacheKey, JSON.stringify(formattedProduct), { EX: CACHE_EXPIRATION });
+                }
+            } catch (error) {
+                console.error('Redis set error:', error);
+            }
+
+            resolve(formattedProduct);
         });
     });
 };
