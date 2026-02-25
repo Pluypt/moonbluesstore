@@ -173,61 +173,8 @@ function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: numb
 }
 
 
-export const getProductByStyleID = async (styleID: string): Promise<Sneaker | null> => {
-    const redis = await getRedisClient();
-    const cacheKey = `product:${styleID}`;
-    /* ORIGINAL CODE - Temporarily disabled
-    const redis = await getRedisClient();
-    // Include filters in cache key for unique caching
-    const filterKey = filters ? `${filters.brand || 'all'}:${filters.priceRange || 'all'}:${filters.sortBy || 'newest'}` : 'default';
-    const cacheKey = `search:${keyword}:${limit}:${page}:${filterKey}`;
-
-    try {
-        if (redis) {
-            const cached = await redis.get(cacheKey);
-            if (cached) {
-                console.log(`Cache hit for keyword: ${keyword} page: ${page}`);
-                return JSON.parse(cached);
-            }
-        }
-    } catch (error) {
-        console.error('Redis error:', error);
-    }
-
-    // We strictly follow the API documentation example to ensure stability
-    // sneaks.getProducts(keyword, limit, callback)
-    // For pagination, we try to fetch more and slice, but cap it to 80
-    const fetchCount = limit; // Default limit for stability - user reported paging issues
-    // If page > 1, we try to fetch more
-    // const fetchCount = Math.min(page * limit + 20, 80);
-
-    console.log(`Calling sneaks.getProducts("${keyword}", ${fetchCount})`);
-
-    // If keyword is empty, use a popular default search term to show products
-    const searchKeyword = keyword && keyword.trim() !== '' ? keyword : 'jordan';
-
-    return new Promise((resolve, reject) => {
-        console.log(`[SNEAKS] Searching for: "${searchKeyword}" with limit: ${fetchCount}`);
-        
-        sneaks.getProducts(searchKeyword, fetchCount, async function (err: any, products: any[]) {
-            if (err) {
-                console.error(`[SNEAKS ERROR] Failed to fetch products for "${searchKeyword}":`, err);
-                console.log(`[SNEAKS] Using mock data as fallback`);
-                
-                // Use mock data as fallback
-                const mockResults = searchMockData(searchKeyword, limit);
-                resolve(mockResults);
-                return;
-            }
-
-            // Check if products is valid
-            if (!products || !Array.isArray(products)) {
-                console.warn(`[SNEAKS WARNING] No products array returned for "${searchKeyword}"`);
-                console.log(`[SNEAKS] Using mock data as fallback`);
-                
-                // Use mock data as fallback
-                const mockResults = searchMockData(searchKeyword, limit);
-                resolve(mockResults);
+// Helper function to apply filters
+function applyFilters(products: Sneaker[], filters?: ProductFilters, limit: number = 20): Sneaker[] {
                 return;
             }
 
