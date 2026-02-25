@@ -47,6 +47,48 @@ export const getProducts = async (
     page: number = 1,
     filters?: ProductFilters
 ): Promise<Sneaker[]> => {
+    // TEMPORARY: Use mock data directly until API is stable
+    console.log(`[GETPRODUCTS] Using mock data for keyword: "${keyword}"`);
+    
+    let results = searchMockData(keyword, limit * 2); // Get more for filtering
+    
+    // Apply filters if provided
+    if (filters) {
+        // Brand filter
+        if (filters.brand && filters.brand !== "All") {
+            results = results.filter(p =>
+                p.brand?.toLowerCase().includes(filters.brand!.toLowerCase())
+            );
+        }
+
+        // Price range filter
+        if (filters.priceRange && filters.priceRange !== 'all') {
+            results = results.filter(p => {
+                const price = p.lowestResellPrice?.stockX || p.retailPrice || 0;
+                if (filters.priceRange === 'low') return price < 100;
+                if (filters.priceRange === 'mid') return price >= 100 && price <= 200;
+                if (filters.priceRange === 'high') return price > 200;
+                return true;
+            });
+        }
+
+        // Sorting
+        if (filters.sortBy) {
+            if (filters.sortBy === 'price_asc') {
+                results.sort((a, b) =>
+                    (a.lowestResellPrice?.stockX || 0) - (b.lowestResellPrice?.stockX || 0)
+                );
+            } else if (filters.sortBy === 'price_desc') {
+                results.sort((a, b) =>
+                    (b.lowestResellPrice?.stockX || 0) - (a.lowestResellPrice?.stockX || 0)
+                );
+            }
+        }
+    }
+
+    return results.slice(0, limit);
+    
+    /* ORIGINAL CODE - Temporarily disabled
     const redis = await getRedisClient();
     // Include filters in cache key for unique caching
     const filterKey = filters ? `${filters.brand || 'all'}:${filters.priceRange || 'all'}:${filters.sortBy || 'newest'}` : 'default';
@@ -186,6 +228,7 @@ export const getProducts = async (
             }
         });
     });
+    */
 };
 
 
