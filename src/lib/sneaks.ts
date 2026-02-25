@@ -1,6 +1,7 @@
 
 import getRedisClient from './redis';
 import { Sneaker } from '@/types/sneaker';
+import { searchMockData } from './mockData';
 
 // Singleton Logic to prevent Mongoose OverwriteModelError in Next.js Dev (HMR)
 // The error "Cannot overwrite Sneaker model" happens because sneaks-api defines a model on import.
@@ -81,22 +82,33 @@ export const getProducts = async (
         sneaks.getProducts(searchKeyword, fetchCount, async function (err: any, products: any[]) {
             if (err) {
                 console.error(`[SNEAKS ERROR] Failed to fetch products for "${searchKeyword}":`, err);
-                resolve([]);
+                console.log(`[SNEAKS] Using mock data as fallback`);
+                
+                // Use mock data as fallback
+                const mockResults = searchMockData(searchKeyword, limit);
+                resolve(mockResults);
                 return;
             }
 
             // Check if products is valid
             if (!products || !Array.isArray(products)) {
                 console.warn(`[SNEAKS WARNING] No products array returned for "${searchKeyword}"`);
-                resolve([]);
+                console.log(`[SNEAKS] Using mock data as fallback`);
+                
+                // Use mock data as fallback
+                const mockResults = searchMockData(searchKeyword, limit);
+                resolve(mockResults);
                 return;
             }
 
             console.log(`[SNEAKS SUCCESS] Returned ${products.length} products for "${searchKeyword}"`);
 
-            // If no results, log for debugging
+            // If no results from API, use mock data
             if (products.length === 0) {
-                console.warn(`[SNEAKS] Zero results for "${searchKeyword}" - API may not have data for this search term`);
+                console.warn(`[SNEAKS] Zero results for "${searchKeyword}" - using mock data`);
+                const mockResults = searchMockData(searchKeyword, limit);
+                resolve(mockResults);
+                return;
             }
 
             try {
